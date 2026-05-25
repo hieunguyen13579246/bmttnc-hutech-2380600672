@@ -22,13 +22,7 @@ def caesar_decrypt():
     decrypted_text = caesar_cipher.decrypt_text(cipher_text, key)
     return jsonify({'decrypted_message': decrypted_text})
 
-
-#main function
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
-
-
-
+#########################################################################################
 
 from cipher.vigenere import VigenereCipher         # Thêm vào phần đầu của file api.py
 
@@ -53,7 +47,7 @@ def vigenere_decrypt():
     decrypted_text = vigenere_cipher.vigenere_decrypt(cipher_text, key)
     return jsonify({'decrypted_text': decrypted_text})
 
-
+##############################################################################
 
 from cipher.railfence import RailFenceCipher         # Thêm vào phần đầu của file api.py
 
@@ -78,15 +72,12 @@ def decrypt():
     decrypted_text = railfence_cipher.rail_fence_decrypt(cipher_text, key)
     return jsonify({'decrypted_text': decrypted_text})
 
-
-
-
-
-from cipher.playfair import PlayFairCipher         # Thêm vào phần đầu của file api.py
+############################################################################
+from cipher.playfair import PlayfairCipher       # Thêm vào phần đầu của file api.py
 
 # Thêm đoạn sau vào trước hàm main
 #PLAYFAIR CIPHER ALGORITHM
-playfair_cipher = PlayFairCipher()
+playfair_cipher = PlayfairCipher() 
 
 @app.route('/api/playfair/creatematrix', methods=['POST'])
 def playfair_creatematrix():
@@ -116,3 +107,21 @@ def playfair_decrypt():
     decrypted_text = playfair_cipher.playfair_decrypt(cipher_text, 
     playfair_matrix)
     return jsonify({'decrypted_text': decrypted_text})
+
+#main function
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
