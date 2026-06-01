@@ -3,16 +3,16 @@ class PlayfairCipher:
         pass
 
     def create_playfair_matrix(self, key):
-        # Đã sửa: Viết đúng chính tả tên hàm thành create_playfair_matrix
+        # Chuyển viết hoa và thay thế J thành I
         key = key.upper().replace("J", "I")
         
-        # Lọc lấy các ký tự duy nhất trong key theo đúng thứ tự xuất hiện
+        # Lọc lấy các ký tự duy nhất trong key và CHỈ GIỮ LẠI CHỮ CÁI (loại bỏ số)
         matrix = []
         for letter in key:
             if letter.isalpha() and letter not in matrix:
                 matrix.append(letter)
                 
-        # Điền nốt các ký tự còn thiếu trong Alphabet vào ma trận
+        # Điền nốt các ký tự còn thiếu trong Alphabet (không chứa J) vào ma trận
         alphabet = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
         for letter in alphabet:
             if letter not in matrix:
@@ -28,9 +28,13 @@ class PlayfairCipher:
                     return row, col
         return None
 
-    def playfair_encrypt(self, plain_text, matrix):
+    # ĐỔI TÊN HÀM: thành encrypt_text để khớp với app.py, tự động xử lý matrix từ key truyền vào
+    def encrypt_text(self, plain_text, key):
+        # Tự động tạo ma trận từ key ngay tại đây
+        matrix = self.create_playfair_matrix(key)
+        
         plain_text = plain_text.upper().replace("J", "I")
-        # Loại bỏ khoảng trắng nếu có để tránh lỗi tìm tọa độ
+        # Loại bỏ hoàn toàn khoảng trắng, số hoặc ký tự đặc biệt trong văn bản cần mã hóa
         plain_text = "".join([c for c in plain_text if c.isalpha()])
         
         # Xử lý chèn X nếu có 2 ký tự trùng nhau đứng cạnh nhau hoặc chuỗi lẻ
@@ -65,12 +69,18 @@ class PlayfairCipher:
                 encrypted_text += matrix[row1][col2]
                 encrypted_text += matrix[row2][col1]
                 
-        return encrypted_text  # Đã sửa: Đưa lệnh return ra ngoài hẳn vòng lặp for
+        return encrypted_text  
 
-    def playfair_decrypt(self, encrypted_text, matrix):
-        cipher_text = encrypted_text.upper()
-        decrypted_text = ""
+    # ĐỔI TÊN HÀM: thành decrypt_text để khớp với app.py, tự động xử lý matrix từ key truyền vào
+    def decrypt_text(self, encrypted_text, key):
+        # Tự động tạo ma trận từ key ngay tại đây
+        matrix = self.create_playfair_matrix(key)
         
+        cipher_text = encrypted_text.upper()
+        # Loại bỏ các ký tự thừa không phải chữ nếu có
+        cipher_text = "".join([c for c in cipher_text if c.isalpha()])
+        
+        decrypted_text = ""
         for i in range(0, len(cipher_text), 2):
             pair = cipher_text[i:i+2]
             row1, col1 = self.find_letter_coords(matrix, pair[0])
@@ -86,4 +96,4 @@ class PlayfairCipher:
                 decrypted_text += matrix[row1][col2]
                 decrypted_text += matrix[row2][col1]
                 
-        return decrypted_text  # Trả về chuỗi giải mã đầy đủ chuẩn xác
+        return decrypted_text

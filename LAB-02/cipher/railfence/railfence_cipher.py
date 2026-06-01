@@ -2,7 +2,9 @@ class RailFenceCipher:
     def __init__(self):
         pass
 
-    def rail_fence_encrypt(self, plain_text, num_rails):
+    # ĐỔI TÊN HÀM: Thành encrypt_text và đổi num_rails thành key để khớp với app.py
+    def encrypt_text(self, plain_text, key):
+        num_rails = key # Gán key vào num_rails để giữ nguyên logic bên dưới của bạn
         rails = [[] for _ in range(num_rails)]
         rail_index = 0
         direction = 1
@@ -13,13 +15,14 @@ class RailFenceCipher:
                     direction = 1
                 elif rail_index == num_rails - 1:
                     direction = -1
-                rail_index += direction  # Đã sửa: viết đúng tên biến và đưa ra ngoài if-elif
+                rail_index += direction  
 
-        # Đã sửa: Đưa đoạn gom chuỗi và return ra ngoài hẳn vòng lặp for
         cipher_text = ''.join([''.join(rail) for rail in rails])
         return cipher_text
 
-    def rail_fence_decrypt(self, cipher_text, num_rails):
+    # ĐỔI TÊN HÀM: Thành decrypt_text và đổi num_rails thành key để khớp với app.py
+    def decrypt_text(self, cipher_text, key):
+        num_rails = key # Gán key vào num_rails để giữ nguyên logic bên dưới của bạn
         rails_lengths = [0] * num_rails
         rail_index = 0
         direction = 1
@@ -37,10 +40,9 @@ class RailFenceCipher:
             rails.append(list(cipher_text[start:start + length]))
             start += length
 
-        # Đã sửa: Đưa toàn bộ đoạn code giải mã dưới đây ra ngoài vòng lặp dựng rails
         plain_text = ""
         rail_index = 0
-        direction = 1  # Đã sửa: gán giá trị rõ ràng cho biến direction
+        direction = 1  
         for _ in range(len(cipher_text)):
             plain_text += rails[rail_index].pop(0)
             if rail_index == 0:
