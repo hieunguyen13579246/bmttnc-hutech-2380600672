@@ -1,19 +1,23 @@
 class VigenereCipher:
     def __init__(self):
         pass
-    def vigenere_encrypt(self, plain_text, key):
-       encrypted_text = ""
-       key_index = 0
-       for char in plain_text:
-           if char.isalpha():
+        
+    # ĐỔI TÊN HÀM: Thành encrypt_text để đồng bộ với app.py
+    def encrypt_text(self, plain_text, key):
+        encrypted_text = ""
+        key_index = 0
+        for char in plain_text:
+            if char.isalpha():
                 shift = ord(key[key_index % len(key)].lower()) - ord('a')
                 encrypted_char = chr((ord(char.lower()) - ord('a') + shift) % 26 + ord('a'))
                 if char.isupper():
                      encrypted_char = encrypted_char.upper()
                 encrypted_text += encrypted_char
                 key_index += 1
-       return encrypted_text
-    def vigenere_decrypt(self, encrypted_text, key):
+        return encrypted_text
+
+    # ĐỔI TÊN HÀM: Thành decrypt_text để đồng bộ với app.py
+    def decrypt_text(self, encrypted_text, key):
         decrypted_text = ""
         key_index = 0
         for char in encrypted_text:

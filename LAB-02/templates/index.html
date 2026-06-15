@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Nguyễn Trung Hiếu: 2380600672</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f9f9f9; }
+        .header-box { background-color: #0056b3; color: white; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
+        .section-box { background: white; border: 1px solid #0056b3; border-radius: 4px; padding: 15px; margin-bottom: 20px; }
+        .section-title { color: #0056b3; margin-top: 0; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+        .btn { padding: 8px 15px; font-weight: bold; cursor: pointer; margin-right: 10px; border: none; border-radius: 3px; }
+        .btn-blue { background-color: #0056b3; color: white; }
+        .btn-green { background-color: #2e7d32; color: white; }
+        .btn-orange { background-color: #ef6c00; color: white; }
+        .btn-download { background-color: #007bff; color: white; display: none; }
+        .output-zone { background-color: #eee; padding: 10px; border-left: 4px solid #0056b3; margin-top: 10px; font-family: monospace; min-height: 20px; }
+        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.4); }
+        .modal-content { background-color: white; margin: 12% auto; padding: 20px; border: 2px solid #0056b3; width: 420px; border-radius: 5px; }
+        .modal-student { background-color: #e6f0fa; padding: 5px; font-size: 13px; margin-bottom: 10px; color: #004085; }
+        .close-btn { float: right; cursor: pointer; font-weight: bold; color: red; }
+    </style>
+</head>
+<body>
+
+    <div class="header-box">
+        <h2>BÀI KIỂM TRA CUỐI KÌ</h2>
+        <p><strong>Sinh viên:</strong> Nguyễn Trung Hiếu | <strong>MSSV:</strong> 2380600672</p>
+    </div>
+
+    <div class="section-box">
+        <h3 class="section-title">🔐 MỤC 1: CRYPTOGRAPHY</h3>
+        <p>Kích chọn thuật toán để mở cấu hình Popup Form:</p>
+        <button class="btn btn-blue" onclick="showModal('caesar')">CAESAR</button>
+        <button class="btn btn-blue" onclick="showModal('playfair')">PLAYFAIR</button>
+        <button class="btn btn-blue" onclick="showModal('railfence')">RAIL FENCE</button>
+        <button class="btn btn-blue" onclick="showModal('vigenere')">VIGENÈRE</button>
+    </div>
+
+    <div class="section-box">
+        <h3 class="section-title">🖼️ MỤC 2: STEGANOGRAPHY</h3>
+        <table style="width: 100%;" border="0">
+            <tr>
+                <td style="width: 50%; vertical-align: top;">
+                    <h4>1️⃣ Tải hình ảnh cần xử lý</h4>
+                    <input type="file" id="stego-file" accept="image/*" onchange="handleFile(event)">
+                    <br><br>
+                    <img id="preview-img" style="max-width: 100%; max-height: 120px; display: none; border: 1px solid #ccc;">
+                </td>
+                <td style="width: 50%; vertical-align: top;">
+                    <h4>2️⃣ Nội dung cần giấu</h4>
+                    <textarea id="stego-text" rows="4" style="width: 100%;" placeholder="Nhập tin nhắn bí mật..."></textarea>
+                </td>
+            </tr>
+        </table>
+        
+        <div style="margin-top: 15px; text-align: center;">
+            <button class="btn btn-green" onclick="stegoAction('hide')">3️⃣ Ẩn Tin</button>
+            <button id="btn-download-stego" class="btn btn-download" onclick="downloadStegoImage()">📥 Tải ảnh đã giấu tin</button>
+            <button class="btn btn-orange" onclick="stegoAction('extract')">4️⃣ Giải Mã từ ảnh trên</button>
+        </div>
+
+        <h4>5️⃣ Kết quả sau khi giải mã:</h4>
+        <div id="stego-output" class="output-zone">Nội dung sẽ hiển thị ở đây...</div>
+    </div>
+
+    <div id="modal-caesar" class="modal"><div class="modal-content"><span class="close-btn" onclick="hideModal('caesar')">[Đóng]</span><h4>Thuật toán: CAESAR CIPHER</h4><div class="modal-student">SV: Nguyễn Trung Hiếu - 2380600672</div><p><input type="radio" name="mode-caesar" value="encrypt" checked> Mã hóa <input type="radio" name="mode-caesar" value="decrypt"> Giải mã</p><p>Key: <input type="number" id="key-caesar" style="width:100%;" placeholder="Ví dụ: 3"></p><p>Nội dung: <textarea id="text-caesar" rows="2" style="width:100%;"></textarea></p><button class="btn btn-blue" onclick="submitCipher('caesar', 'number')">Thực hiện</button><div id="result-caesar" class="output-zone">Chưa chạy.</div></div></div>
+    <div id="modal-playfair" class="modal"><div class="modal-content"><span class="close-btn" onclick="hideModal('playfair')">[Đóng]</span><h4>Thuật toán: PLAYFAIR CIPHER</h4><div class="modal-student">SV: Nguyễn Trung Hiếu - 2380600672</div><p><input type="radio" name="mode-playfair" value="encrypt" checked> Mã hóa <input type="radio" name="mode-playfair" value="decrypt"> Giải mã</p><p>Key: <input type="text" id="key-playfair" style="width:100%;" placeholder="Ví dụ: SECRET"></p><p>Nội dung: <textarea id="text-playfair" rows="2" style="width:100%;"></textarea></p><button class="btn btn-blue" onclick="submitCipher('playfair', 'text')">Thực hiện</button><div id="result-playfair" class="output-zone">Chưa chạy.</div></div></div>
+    <div id="modal-railfence" class="modal"><div class="modal-content"><span class="close-btn" onclick="hideModal('railfence')">[Đóng]</span><h4>Thuật toán: RAIL FENCE CIPHER</h4><div class="modal-student">SV: Nguyễn Trung Hiếu - 2380600672</div><p><input type="radio" name="mode-railfence" value="encrypt" checked> Mã hóa <input type="radio" name="mode-railfence" value="decrypt"> Giải mã</p><p>Key: <input type="number" id="key-railfence" style="width:100%;" placeholder="Ví dụ: 3"></p><p>Nội dung: <textarea id="text-railfence" rows="2" style="width:100%;"></textarea></p><button class="btn btn-blue" onclick="submitCipher('railfence', 'number')">Thực hiện</button><div id="result-railfence" class="output-zone">Chưa chạy.</div></div></div>
+    <div id="modal-vigenere" class="modal"><div class="modal-content"><span class="close-btn" onclick="hideModal('vigenere')">[Đóng]</span><h4>Thuật toán: VIGENÈRE CIPHER</h4><div class="modal-student">SV: Nguyễn Trung Hiếu - 2380600672</div><p><input type="radio" name="mode-vigenere" value="encrypt" checked> Mã hóa <input type="radio" name="mode-vigenere" value="decrypt"> Giải mã</p><p>Key: <input type="text" id="key-vigenere" style="width:100%;" placeholder="Ví dụ: LEMON"></p><p>Nội dung: <textarea id="text-vigenere" rows="2" style="width:100%;"></textarea></p><button class="btn btn-blue" onclick="submitCipher('vigenere', 'text')">Thực hiện</button><div id="result-vigenere" class="output-zone">Chưa chạy.</div></div></div>
+
+    <script>
+        function showModal(id) { document.getElementById('modal-' + id).style.display = 'block'; }
+        function hideModal(id) { document.getElementById('modal-' + id).style.display = 'none'; }
+
+        async function submitCipher(type, keyFormat) {
+            const key = document.getElementById(`key-${type}`).value.trim();
+            const text = document.getElementById(`text-${type}`).value.trim();
+            const mode = document.querySelector(`input[name="mode-${type}"]:checked`).value;
+
+            if(!key || !text) { alert("Lỗi: Vui lòng điền đủ Key và Nội dung!"); return; }
+            if(keyFormat === 'text' && !/^[A-Za-z]+$/.test(key)) { alert("Lỗi: Key phải hoàn toàn là CHỮ!"); return; }
+            if(keyFormat === 'number' && (isNaN(key) || parseInt(key) <= 0)) { alert("Lỗi: Key phải là SỐ NGUYÊN DƯƠNG!"); return; }
+
+            try {
+                let response = await fetch('/api/cipher', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type, mode, key, text })
+                });
+                let data = await response.json();
+                if(data.error) alert(data.error);
+                else document.getElementById(`result-${type}`).innerText = data.result;
+            } catch (err) { alert("Lỗi kết nối server!"); }
+        }
+
+        let base64Image = "";
+        let stegoImageResult = ""; // Lưu trữ dữ liệu ảnh mật mã sau khi ẩn tin thành công
+
+        function handleFile(event) {
+            let file = event.target.files[0];
+            if(file) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    base64Image = e.target.result;
+                    document.getElementById('preview-img').src = base64Image;
+                    document.getElementById('preview-img').style.display = 'block';
+                    // Reset lại nút tải xuống khi đổi ảnh mới
+                    document.getElementById('btn-download-stego').style.display = 'none';
+                    stegoImageResult = "";
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function stegoAction(action) {
+            // Khi giải mã, nếu đã có ảnh giấu tin thì ưu tiên giải mã từ ảnh giấu tin đó
+            let targetImage = (action === 'extract' && stegoImageResult) ? stegoImageResult : base64Image;
+            
+            if(!targetImage) { alert("Lỗi ràng buộc: Vui lòng chọn tệp hình ảnh!"); return; }
+            let text = document.getElementById('stego-text').value.trim();
+
+            if(action === 'hide' && !text) { alert("Lỗi: Vui lòng điền nội dung cần giấu!"); return; }
+
+            let url = action === 'hide' ? '/api/stego/hide' : '/api/stego/extract';
+            let bodyData = action === 'hide' ? { image: base64Image, text: text } : { image: targetImage };
+
+            try {
+                let response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(bodyData)
+                });
+                let data = await response.json();
+                if(data.error) {
+                    alert(data.error);
+                } else {
+                    if(action === 'hide') {
+                        alert(data.message);
+                        stegoImageResult = data.stego_image;
+                        // Hiển thị nút Tải ảnh lên màn hình
+                        document.getElementById('btn-download-stego').style.display = 'inline-block';
+                    } else {
+                        document.getElementById('stego-output').innerText = data.extracted_text;
+                    }
+                }
+            } catch (err) { alert("Lỗi đường truyền dữ liệu!"); }
+        }
+
+        // Hàm xử lý tải file ảnh đã ẩn mật mã về máy tính
+        function downloadStegoImage() {
+            if(!stegoImageResult) return;
+            let link = document.createElement('a');
+            link.href = stegoImageResult;
+            link.download = 'stego_encoded_image.png'; // Lưu dưới dạng PNG để đảm bảo bit không bị nén sai lệch
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
