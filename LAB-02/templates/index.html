@@ -1,21 +1,200 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Thực hành An toàn thông tin nâng cao</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <title>Nguyễn Trung Hiếu: 2380600672</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f9f9f9; }
+        .header-box { background-color: #0056b3; color: white; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
+        .section-box { background: white; border: 1px solid #0056b3; border-radius: 4px; padding: 15px; margin-bottom: 20px; }
+        .section-title { color: #0056b3; margin-top: 0; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+        
+        .btn { padding: 8px 15px; font-weight: bold; cursor: pointer; margin-right: 10px; }
+        .btn-blue { background-color: #0056b3; color: white; border: none; }
+        .btn-green { background-color: #2e7d32; color: white; border: none; }
+        .btn-orange { background-color: #ef6c00; color: white; border: none; }
+        
+        .output-zone { background-color: #eee; padding: 10px; border-left: 4px solid #0056b3; margin-top: 10px; font-family: monospace; }
+        
+        /* Popup Modal */
+        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.4); }
+        .modal-content { background-color: white; margin: 12% auto; padding: 20px; border: 2px solid #0056b3; width: 420px; border-radius: 5px; }
+        .modal-student { background-color: #e6f0fa; padding: 5px; font-size: 13px; margin-bottom: 10px; color: #004085; }
+        .close-btn { float: right; cursor: pointer; font-weight: bold; color: red; }
+    </style>
 </head>
 <body>
-    <div class="container" style="margin-top: 50px;">
-        <img src="https://file1.hutech.edu.vn/file/editor/homepage/stories/hinh34/logo%20CMYK-01.png" alt="hutech" style="display: block; margin-left: auto; margin-right: auto; width: 30%;">
-        <h4 style="font-weight: bold; text-align: center; margin-top: 20px;">BÀI THỰC HÀNH BẢO MẬT THÔNG TIN NÂNG CAO</h4>
-        
-        <ul style="margin-top: 30px; font-size: 18px;">
-            <li><a href="/caesar">Caesar Cipher NguyenTrungHieu-2380600672</a></li>
-            <li><a href="/playfair">Playfair Cipher NguyenTrungHieu-2380600672</a></li>
-            <li><a href="/vigenere">Vigenere Cipher NguyenTrungHieu-2380600672</a></li>
-            <li><a href="/railfence">Rail Fence Cipher NguyenTrungHieu-2380600672</a></li>
-        </ul>
+
+    <div class="header-box">
+        <h2>BÀI KIỂM TRA CUỐI KÌ</h2>
+        <p><strong>Sinh viên:</strong> Nguyễn Trung Hiếu | <strong>MSSV:</strong> 2380600672</p>
     </div>
+
+    <div class="section-box">
+        <h3 class="section-title">🔐 MỤC 1: CRYPTOGRAPHY</h3>
+        <p>Kích chọn thuật toán để mở cấu hình Popup Form:</p>
+        <button class="btn btn-blue" onclick="showModal('caesar')">CAESAR</button>
+        <button class="btn btn-blue" onclick="showModal('playfair')">PLAYFAIR</button>
+        <button class="btn btn-blue" onclick="showModal('railfence')">RAIL FENCE</button>
+        <button class="btn btn-blue" onclick="showModal('vigenere')">VIGENÈRE</button>
+    </div>
+
+    <div class="section-box">
+        <h3 class="section-title">🖼️ MỤC 2: STEGANOGRAPHY</h3>
+        <table style="width: 100%;" border="0">
+            <tr>
+                <td style="width: 50%; vertical-align: top;">
+                    <h4>1️⃣ Tải hình ảnh</h4>
+                    <input type="file" id="stego-file" accept="image/*" onchange="handleFile(event)">
+                    <br><br>
+                    <img id="preview-img" style="max-width: 100%; max-height: 120px; display: none; border: 1px solid #ccc;">
+                </td>
+                <td style="width: 50%; vertical-align: top;">
+                    <h4>2️⃣ Nội dung cần giấu</h4>
+                    <textarea id="stego-text" rows="4" style="width: 100%;" placeholder="Nhập tin nhắn bí mật..."></textarea>
+                </td>
+            </tr>
+        </table>
+        
+        <div style="margin-top: 15px; text-align: center;">
+            <button class="btn btn-green" onclick="stegoAction('hide')">3️⃣ Ẩn Tin</button>
+            <button class="btn btn-orange" onclick="stegoAction('extract')">4️⃣ Giải Mã</button>
+        </div>
+
+        <h4>5️⃣ Kết quả sau khi giải mã:</h4>
+        <div id="stego-output" class="output-zone">Nội dung sẽ hiển thị ở đây...</div>
+    </div>
+
+
+    <div id="modal-caesar" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="hideModal('caesar')">[Đóng]</span>
+            <h4>Thuật toán: CAESAR CIPHER</h4>
+            <div class="modal-student">SV: Nguyễn Trung Hiếu - 2380600672</div>
+            <p>
+                <input type="radio" name="mode-caesar" value="encrypt" checked> Mã hóa
+                <input type="radio" name="mode-caesar" value="decrypt"> Giải mã
+            </p>
+            <p>Key (Số nguyên dịch chuyển): <input type="number" id="key-caesar" style="width:100%;" placeholder="Ví dụ: 3"></p>
+            <p>Nội dung: <textarea id="text-caesar" rows="2" style="width:100%;"></textarea></p>
+            <button class="btn btn-blue" onclick="submitCipher('caesar', 'number')">Thực hiện</button>
+            <div id="result-caesar" class="output-zone">Chưa chạy.</div>
+        </div>
+    </div>
+
+    <div id="modal-playfair" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="hideModal('playfair')">[Đóng]</span>
+            <h4>Thuật toán: PLAYFAIR CIPHER</h4>
+            <div class="modal-student">SV: Nguyễn Trung Hiếu - 2380600672</div>
+            <p>
+                <input type="radio" name="mode-playfair" value="encrypt" checked> Mã hóa
+                <input type="radio" name="mode-playfair" value="decrypt"> Giải mã
+            </p>
+            <p>Key (Chuỗi ký tự chữ): <input type="text" id="key-playfair" style="width:100%;" placeholder="Ví dụ: SECRET"></p>
+            <p>Nội dung: <textarea id="text-playfair" rows="2" style="width:100%;"></textarea></p>
+            <button class="btn btn-blue" onclick="submitCipher('playfair', 'text')">Thực hiện</button>
+            <div id="result-playfair" class="output-zone">Chưa chạy.</div>
+        </div>
+    </div>
+
+    <div id="modal-railfence" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="hideModal('railfence')">[Đóng]</span>
+            <h4>Thuật toán: RAIL FENCE CIPHER</h4>
+            <div class="modal-student">SV: Nguyễn Trung Hiếu - 2380600672</div>
+            <p>
+                <input type="radio" name="mode-railfence" value="encrypt" checked> Mã hóa
+                <input type="radio" name="mode-railfence" value="decrypt"> Giải mã
+            </p>
+            <p>Key (Số hàng rào): <input type="number" id="key-railfence" style="width:100%;" placeholder="Ví dụ: 3"></p>
+            <p>Nội dung: <textarea id="text-railfence" rows="2" style="width:100%;"></textarea></p>
+            <button class="btn btn-blue" onclick="submitCipher('railfence', 'number')">Thực hiện</button>
+            <div id="result-railfence" class="output-zone">Chưa chạy.</div>
+        </div>
+    </div>
+
+    <div id="modal-vigenere" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="hideModal('vigenere')">[Đóng]</span>
+            <h4>Thuật toán: VIGENÈRE CIPHER</h4>
+            <div class="modal-student">SV: Nguyễn Trung Hiếu - 2380600672</div>
+            <p>
+                <input type="radio" name="mode-vigenere" value="encrypt" checked> Mã hóa
+                <input type="radio" name="mode-vigenere" value="decrypt"> Giải mã
+            </p>
+            <p>Key (Từ khóa liền chữ): <input type="text" id="key-vigenere" style="width:100%;" placeholder="Ví dụ: LEMON"></p>
+            <p>Nội dung: <textarea id="text-vigenere" rows="2" style="width:100%;"></textarea></p>
+            <button class="btn btn-blue" onclick="submitCipher('vigenere', 'text')">Thực hiện</button>
+            <div id="result-vigenere" class="output-zone">Chưa chạy.</div>
+        </div>
+    </div>
+
+    <script>
+        function showModal(id) { document.getElementById('modal-' + id).style.display = 'block'; }
+        function hideModal(id) { document.getElementById('modal-' + id).style.display = 'none'; }
+
+        // Gửi dữ liệu mã hóa lên Server Python kèm kiểm tra Validation dữ liệu nhập
+        async function submitCipher(type, keyFormat) {
+            const key = document.getElementById(`key-${type}`).value.trim();
+            const text = document.getElementById(`text-${type}`).value;
+            const mode = document.querySelector(`input[name="mode-${type}"]:checked`).value;
+
+            // Kiểm tra các quy tắc ràng buộc của khóa Key
+            if(!key) {
+                alert("Lỗi: Khóa Key không được để trống!");
+                return;
+            }
+            if(keyFormat === 'text' && !/^[A-Za-z\s]+$/.test(key)) {
+                alert("Lỗi: Key của thuật toán này bắt buộc phải là KÝ TỰ CHỮ!");
+                return;
+            }
+            if(keyFormat === 'number' && isNaN(key)) {
+                alert("Lỗi: Key của thuật toán này bắt buộc phải là SỐ NGUYÊN!");
+                return;
+            }
+
+            let response = await fetch('/api/cipher', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type, mode, key, text })
+            });
+            let data = await response.json();
+            document.getElementById(`result-${type}`).innerText = data.result;
+        }
+
+        // Xử lý dữ liệu File ảnh Steganography
+        let base64Image = "";
+        function handleFile(event) {
+            let file = event.target.files[0];
+            if(file) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    base64Image = e.target.result;
+                    document.getElementById('preview-img').src = base64Image;
+                    document.getElementById('preview-img').style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function stegoAction(action) {
+            if(!base64Image) { alert("Vui lòng chọn một file ảnh trước!"); return; }
+            let text = document.getElementById('stego-text').value;
+
+            let url = action === 'hide' ? '/api/stego/hide' : '/api/stego/extract';
+            let bodyData = action === 'hide' ? { image: base64Image, text: text } : { image: base64Image };
+
+            let response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(bodyData)
+            });
+            let data = await response.json();
+            
+            if(action === 'hide') alert(data.message);
+            else document.getElementById('stego-output').innerText = data.extracted_text;
+        }
+    </script>
 </body>
 </html>
